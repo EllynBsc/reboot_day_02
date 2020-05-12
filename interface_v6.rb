@@ -48,7 +48,22 @@ def display_list(christmas_list)
 end
 
 
+def scraping(url, article)
 
+  html_content = open("#{url}#{article}").read
+
+  doc_nokogiri_element = Nokogiri::HTML(html_content)
+
+  final_array_scraping = []
+  doc_nokogiri_element.search('.v2-listing-card .v2-listing-card__info .text-body').each do |element|
+
+     final_array_scraping << element.text.strip
+  end
+  final_array_scraping.first(10).each_with_index do |item, index|
+   puts "#{index + 1} - #{item}"
+  end
+
+end
 
 
 
@@ -107,22 +122,11 @@ while user_action != "quit"
     puts "what do you want to look for (inspiration)?"
     article = gets.chomp
 
-    html_content = open("https://www.etsy.com/search?q=#{article}").read
-
-    doc_nokogiri_element = Nokogiri::HTML(html_content)
-
-    final_array_scraping = []
-    doc_nokogiri_element.search('.v2-listing-card .v2-listing-card__info .text-body').each do |element|
-
-       final_array_scraping << element.text.strip
-    end
-    final_array_scraping.first(10).each_with_index do |item, index|
-     puts "#{index + 1} - #{item}"
-    end
+    puts array_scraping = scraping("https://www.etsy.com/search?q=", article)
 
     puts "which one do you want to add to your christmas list?"
     index_item_scraping = gets.chomp.to_i - 1
-    item_to_add = final_array_scraping[index_item_scraping]
+    item_to_add = array_scraping[index_item_scraping]
     christmas_list[item_to_add] = false
 
   else
@@ -136,13 +140,6 @@ puts "storing in the csv ..."
 puts "Goodbye thank you!"
 
 
-
-
-# PARSING: extracting the text format from the csv and getting back ruby objects
-# happening at the beginning of the program(load the program)
-
-# STORING : ruby object => text format
-# happening at the end of the program(quit)
 
 
 
